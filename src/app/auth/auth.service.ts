@@ -5,7 +5,7 @@ import 'firebase/auth';
 
 @Injectable()
 export class AuthService {
-    token: string;
+    token: string = null;
 
     constructor(private router: Router) {}
 
@@ -21,6 +21,7 @@ export class AuthService {
         .then(
             response => {
                 // console.log(response);
+                if (this.token !== null)
                 localStorage.setItem('userToken', JSON.stringify(response.user));
                 this.router.navigate(['/']);
                 firebase.auth().currentUser.getIdToken()
@@ -59,10 +60,11 @@ export class AuthService {
         } else {
             this.token = null;
         }
+        return this.token != null;
     }
 
     isAuthenticated() {
-        //this.checkIsLocalTokenAvailable();
-        return this.token != null;
+        const token = this.checkIsLocalTokenAvailable();
+        return token;
     }
 }
